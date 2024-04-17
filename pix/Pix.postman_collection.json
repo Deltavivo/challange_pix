@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"keyType\": \"ALEATORIO\",\r\n    \"keyValue\": 153456789012345678901234567890123456,\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Delfim\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -21,14 +21,13 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9090/pix/",
+					"raw": "localhost:9090/pix",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
-						"pix",
-						""
+						"pix"
 					]
 				}
 			},
@@ -37,11 +36,11 @@
 		{
 			"name": "updateKey",
 			"request": {
-				"method": "POST",
+				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": 4054,\r\n    \"account\": 87108,\r\n    \"accountHolderName\": \"Delfim\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -49,14 +48,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9090/pix/234234234234",
+					"raw": "localhost:9090/pix/048025ad-99ab-479f-916d-a69c717bd6ca",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
 						"pix",
-						"234234234234"
+						"048025ad-99ab-479f-916d-a69c717bd6ca"
 					]
 				}
 			},
@@ -65,57 +64,38 @@
 		{
 			"name": "deleteKey",
 			"request": {
-				"method": "DELETE",
+				"method": "PUT",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "localhost:9090/pix/234234234234",
+					"raw": "localhost:9090/pix/inactive/048025ad-99ab-479f-916d-a69c717bd6ca",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
 						"pix",
-						"234234234234"
+						"inactive",
+						"048025ad-99ab-479f-916d-a69c717bd6ca"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "findByID",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
+			"name": "findById",
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "localhost:9090/pix/234234234234",
+					"raw": "localhost:9090/pix/findById/048025ad-99ab-479f-916d-a69c717bd6ca",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
 						"pix",
-						"234234234234"
+						"findById",
+						"048025ad-99ab-479f-916d-a69c717bd6ca"
 					]
 				}
 			},
@@ -131,7 +111,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"keyType\": \"CPF\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -139,13 +119,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9090/pix/234234234234",
+					"raw": "localhost:9090/pix/findByKeyType/234234234234",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
 						"pix",
+						"findByKeyType",
 						"234234234234"
 					]
 				}
@@ -162,7 +143,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"agencyAndAccount\": \"7065087107\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -170,13 +151,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9090/pix/234234234234",
+					"raw": "localhost:9090/pix/findByAgencyAndAccount/234234234234",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
 						"pix",
+						"findByAgencyAndAccount",
 						"234234234234"
 					]
 				}
@@ -193,7 +175,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"keyInclusionDate\": \"date\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -201,13 +183,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9090/pix/234234234234",
+					"raw": "localhost:9090/pix/findByAccountHolderName/234234234234",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
 						"pix",
+						"findByAccountHolderName",
 						"234234234234"
 					]
 				}
@@ -232,13 +215,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9090/pix/234234234234",
+					"raw": "localhost:9090/pix/findByKeyInclusionDate/234234234234",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
 						"pix",
+						"findByKeyInclusionDate",
 						"234234234234"
 					]
 				}
@@ -255,7 +239,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"keyInactivationDate\": \"date\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -263,13 +247,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:9090/pix/234234234234",
+					"raw": "localhost:9090/pix/findByKeyInactivationDate/234234234234",
 					"host": [
 						"localhost"
 					],
 					"port": "9090",
 					"path": [
 						"pix",
+						"findByKeyInactivationDate",
 						"234234234234"
 					]
 				}
