@@ -2,7 +2,7 @@ package com.itau.pix.dto;
 
 import java.util.UUID;
 
-public class modifyPixDTO {
+public class UpdatePixDTO {
     UUID id;
     String accountType;
     Integer agency;

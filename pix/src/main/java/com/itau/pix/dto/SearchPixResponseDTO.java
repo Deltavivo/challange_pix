@@ -6,7 +6,7 @@ import com.itau.pix.enums.KeyType;
 import java.util.Date;
 import java.util.UUID;
 
-public class SearchPixDTO {
+public class SearchPixResponseDTO {
     UUID id;
     KeyType keyType;
     String keyValue;
