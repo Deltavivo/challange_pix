@@ -1,20 +1,14 @@
 package com.itau.pix.dto;
 
-import com.itau.pix.enums.AccountType;
 import com.itau.pix.enums.KeyType;
-import lombok.*;
+import com.itau.pix.enums.AccountType;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.Date;
-import java.util.UUID;
-
-@Builder
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class UpdatePixResponseDTO {
-    private UUID id;
+public class CreatePixRequestDTO {
+
     private KeyType keyType;
     private String keyValue;
     private AccountType accountType;
@@ -22,5 +16,5 @@ public class UpdatePixResponseDTO {
     private Integer account;
     private String accountHolderName;
     private String accountHolderSurname;
-    private Date dateTimeKeyIncluded;
+
 }
