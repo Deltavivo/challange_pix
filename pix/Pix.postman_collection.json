@@ -1,0 +1,280 @@
+{
+	"info": {
+		"_postman_id": "05692cef-25a9-45a3-b734-323f6ac1a5ac",
+		"name": "Pix",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8954491"
+	},
+	"item": [
+		{
+			"name": "registryKey",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateKey",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/234234234234",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						"234234234234"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteKey",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/234234234234",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						"234234234234"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/234234234234",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						"234234234234"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByKeyType",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/234234234234",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						"234234234234"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByAgencyAndAccount",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/234234234234",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						"234234234234"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByAccountHolderName",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/234234234234",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						"234234234234"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByKeyInclusionDate",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/234234234234",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						"234234234234"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByKeyInactivationDate",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/234234234234",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						"234234234234"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
