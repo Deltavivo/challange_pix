@@ -18,8 +18,8 @@ public class SearchPixResponseDTO {
     private KeyType keyType;
     private String keyValue;
     private AccountType accountType;
-    private Integer agency;
-    private Integer account;
+    private String agency;
+    private String account;
     private String accountHolderName;
     private String accountHolderSurname;
     private Date dateTimeKeyIncluded;

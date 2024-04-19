@@ -17,17 +17,26 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode(of = "id")
 public class Pix {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(length = 9)
     private KeyType keyType;
+    @Column(length = 99)
     private String keyValue;
+    @Column(length = 10)
     private AccountType accountType;
-    private Integer agency;
-    private Integer account;
+    @Column(length = 4)
+    private String agency;
+    @Column(length = 8)
+    private String account;
+    @Column(length = 30)
     private String accountHolderName;
+    @Column(length = 45)
     private String accountHolderSurname;
     private Date dateTimeKeyIncluded;
     private Date dateTimeKeyInactivation;

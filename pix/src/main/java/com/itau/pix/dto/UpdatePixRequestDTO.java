@@ -1,9 +1,12 @@
 package com.itau.pix.dto;
 
 import com.itau.pix.enums.AccountType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
-
-import java.util.UUID;
+import org.hibernate.validator.constraints.Range;
 
 @Builder
 @Getter
@@ -12,9 +15,19 @@ import java.util.UUID;
 @AllArgsConstructor
 @ToString
 public class UpdatePixRequestDTO {
+
+    @NotEmpty @NotNull
     private AccountType accountType;
-    private Integer agency;
-    private Integer account;
+
+    @Size(max = 4) @NotEmpty @NotNull @NotBlank
+    private String agency;
+
+    @Size(max = 8) @NotEmpty @NotNull @NotBlank
+    private String account;
+
+    @Size(max = 30) @NotEmpty @NotNull @NotBlank
     private String accountHolderName;
+
+    @Size(max = 45)
     private String accountHolderSurname;
 }
