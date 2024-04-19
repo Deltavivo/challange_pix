@@ -1,29 +1,37 @@
 package com.itau.pix.service;
 
+import com.itau.pix.converter.PixEntityToSearchPixResponseDTO;
 import com.itau.pix.dto.*;
-import com.itau.pix.entities.Pix;
+import com.itau.pix.entities.PixEntity;
+import com.itau.pix.enums.KeyType;
+import com.itau.pix.exceptions.UnsupportedPixException;
 import com.itau.pix.repository.PixRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Calendar;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.logging.Logger;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.util.stream.Collectors.toCollection;
+
 
 @Service
 public class PixService {
 
     @Autowired
-    private PixRepository pixRepository;
+    private PixRepository repository;
+
+    private final PixEntityToSearchPixResponseDTO toApi;
+
+    public PixService(PixEntityToSearchPixResponseDTO toApi) {
+        this.toApi = toApi;
+    }
 
     public CreatePixResponseDTO createPix(CreatePixRequestDTO pixDTO) {
 
         //TODO:verify if the key exist
 
-        Pix pix = Pix.builder()
+        PixEntity pix = PixEntity.builder()
                 .keyType(pixDTO.getKeyType())
                 .keyValue(pixDTO.getKeyValue())
                 .accountType(pixDTO.getAccountType())
@@ -34,7 +42,7 @@ public class PixService {
                 .dateTimeKeyIncluded(Calendar.getInstance().getTime()).build();
 
         //save in database
-        Pix pixSaved = pixRepository.save(pix);
+        PixEntity pixSaved = repository.save(pix);
 
         //TODO:verify if is valid
         return CreatePixResponseDTO.builder().id(pixSaved.getId()).build();
@@ -45,7 +53,7 @@ public class PixService {
 
     public SearchPixResponseDTO findById(String id){
 
-        Optional<Pix> pixData = pixRepository.findById(UUID.fromString(id));
+        Optional<PixEntity> pixData = repository.findById(UUID.fromString(id));
 
         if(pixData.isPresent()){
             return SearchPixResponseDTO.builder()
@@ -62,20 +70,21 @@ public class PixService {
 
         }
 
-        return new SearchPixResponseDTO();
+        throw new UnsupportedPixException("Registro nao encontrado.");
 
     }
+
     public UpdatePixResponseDTO updatePix(String id, UpdatePixRequestDTO pixDTO) {
         //verify if the key exist
-        Optional<Pix> pixData = pixRepository.findById(UUID.fromString(id));
+        Optional<PixEntity> pixData = repository.findById(UUID.fromString(id));
 
         //verify if the key is inactive
         if(!(pixData.get().getDateTimeKeyInactivation() == null)){
-            return new UpdatePixResponseDTO();
+            throw new UnsupportedPixException("Registro PIX inativo.");
         }
         //cant update id, type or value of key
         if(pixData.isPresent()){
-            Pix updatePix = Pix.builder()
+            PixEntity updatePix = PixEntity.builder()
                     .keyType(pixData.get().getKeyType())
                     .keyValue(pixData.get().getKeyValue())
                     .accountType(pixDTO.getAccountType())
@@ -85,7 +94,7 @@ public class PixService {
                     .accountHolderSurname(pixDTO.getAccountHolderSurname())
                     .dateTimeKeyIncluded(Calendar.getInstance().getTime()).build();
 
-            pixRepository.save(updatePix);
+            repository.save(updatePix);
 
             return UpdatePixResponseDTO.builder()
                     .id(updatePix.getId())
@@ -99,28 +108,27 @@ public class PixService {
                     .dateTimeKeyIncluded(updatePix.getDateTimeKeyIncluded()).build();
 
         }
-
-        return new UpdatePixResponseDTO();
+        throw new UnsupportedPixException("Registro nao encontrado.");
     }
 
     public DeletePixResponseDTO deletePix(String id){
 
         //verify if exist Pix
-        Optional<Pix> pixData = pixRepository.findById(UUID.fromString(id));
+        Optional<PixEntity> pixData = repository.findById(UUID.fromString(id));
 
         if(pixData.isPresent()){
 
             //verify if pix was inactive
             if(!(pixData.get().getDateTimeKeyInactivation() == null)){
-                return new DeletePixResponseDTO();
+                throw new UnsupportedPixException("Registro PIX inativo.");
             }
 
             //update inactivate data
-            Pix updatedPix = pixData.get();
+            PixEntity updatedPix = pixData.get();
             updatedPix.setDateTimeKeyInactivation(Calendar.getInstance().getTime());
 
             //save in database
-            pixRepository.save(updatedPix);
+            repository.save(updatedPix);
 
             //create response dto
             return DeletePixResponseDTO.builder()
@@ -136,7 +144,48 @@ public class PixService {
                     .dateTimeKeyInactivation(Calendar.getInstance().getTime()).build();
 
         }
-        return new DeletePixResponseDTO();
+        throw new UnsupportedPixException("Registro nao encontrado.");
+    }
+
+    public List<SearchPixResponseDTO> findByKeyType(KeyType keyType){
+
+        return repository.findByKeyType(keyType)
+                .stream()
+                .map(toApi)
+                .collect(toCollection(ArrayList::new));
+
+    }
+
+    public List<SearchPixResponseDTO> findByAgencyAndAccount(String agency, String account){
+
+        return repository.findByAgencyAndAccount(agency, account)
+                .stream()
+                .map(toApi)
+                .collect(toCollection(ArrayList::new));
+    }
+
+    public List<SearchPixResponseDTO> findByAccountHolderName(String accountHolderName){
+
+        return repository.findByAccountHolderName(accountHolderName)
+                .stream()
+                .map(toApi)
+                .collect(toCollection(ArrayList::new));
+    }
+
+    public List<SearchPixResponseDTO> findByInclusionDate(Date dateTimeKeyIncluded){
+
+        return repository.findByDateTimeKeyIncluded(dateTimeKeyIncluded)
+                .stream()
+                .map(toApi)
+                .collect(toCollection(ArrayList::new));
+    }
+
+    public List<SearchPixResponseDTO> findByInactivationDate(Date dateTimeKeyInactivation){
+
+        return repository.findByDateTimeKeyInactivation(dateTimeKeyInactivation)
+                .stream()
+                .map(toApi)
+                .collect(toCollection(ArrayList::new));
     }
 
 
@@ -152,33 +201,58 @@ public class PixService {
     private static final Pattern cnpjPattern = Pattern.compile(CNPJ_PATTERN);
     private static final Pattern randomPattern = Pattern.compile(RANDOM_PATTERN);
 
-    public static boolean isValid(String value, String type ) {
-
-        switch (type) {
-            case "CELULAR":
-                Matcher celMatcher = celPattern.matcher(value);
-                return (celMatcher.matches());
-
-            case "EMAIL":
-                Matcher emailMatcher = emailPattern.matcher(value);
-                return (emailMatcher.matches());
-
-            case "CPF":
-                Matcher cpfMatcher = cpfPattern.matcher(value);
-                return (cpfMatcher.matches());
-
-            case "CNPJ":
-                Matcher cnpjMatcher = cnpjPattern.matcher(value);
-                return (cnpjMatcher.matches());
-
-            case "ALEATORIO":
-                Matcher randomMatcher = randomPattern.matcher(value);
-                return (randomMatcher.matches());
-
-            default:
-                return false;
-
-        }
+    private static boolean isCellphoneValid(String value){
+        Matcher celMatcher = celPattern.matcher(value);
+        return (celMatcher.matches());
     }
+
+    private static boolean isEmailValid(String value){
+        Matcher emailMatcher = emailPattern.matcher(value);
+        return (emailMatcher.matches());
+    }
+
+    private static boolean isCPFValid(String value){
+        Matcher cpfMatcher = cpfPattern.matcher(value);
+        return (cpfMatcher.matches());
+    }
+
+    private static boolean isCNPJValid(String value){
+        Matcher cnpjMatcher = cnpjPattern.matcher(value);
+        return (cnpjMatcher.matches());
+    }
+
+    private static boolean isKeyValid(String value){
+        Matcher randomMatcher = randomPattern.matcher(value);
+        return (randomMatcher.matches());
+    }
+
+//    private static boolean isValid(String value, String type ) {
+//
+//        switch (type) {
+//            case "CELULAR":
+//                Matcher celMatcher = celPattern.matcher(value);
+//                return (celMatcher.matches());
+//
+//            case "EMAIL":
+//                Matcher emailMatcher = emailPattern.matcher(value);
+//                return (emailMatcher.matches());
+//
+//            case "CPF":
+//                Matcher cpfMatcher = cpfPattern.matcher(value);
+//                return (cpfMatcher.matches());
+//
+//            case "CNPJ":
+//                Matcher cnpjMatcher = cnpjPattern.matcher(value);
+//                return (cnpjMatcher.matches());
+//
+//            case "ALEATORIO":
+//                Matcher randomMatcher = randomPattern.matcher(value);
+//                return (randomMatcher.matches());
+//
+//            default:
+//                return false;
+//
+//        }
+//    }
 
 }

@@ -1,12 +1,17 @@
 package com.itau.pix.controller;
 
 import com.itau.pix.dto.*;
+import com.itau.pix.enums.KeyType;
 import com.itau.pix.repository.PixRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.itau.pix.service.PixService;
+
+import java.sql.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/pix")
@@ -19,12 +24,12 @@ public class PixController {
     private PixService pixService;
 
     @PostMapping
-    public ResponseEntity<CreatePixResponseDTO> createPix(@RequestBody CreatePixRequestDTO pixDTO){
+    public ResponseEntity<CreatePixResponseDTO> createPix(@RequestBody @Valid CreatePixRequestDTO pixDTO){
         return new ResponseEntity<>(pixService.createPix(pixDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UpdatePixResponseDTO> updatePix(@PathVariable String id, @RequestBody UpdatePixRequestDTO pixDTO){
+    public ResponseEntity<UpdatePixResponseDTO> updatePix(@PathVariable String id, @RequestBody @Valid UpdatePixRequestDTO pixDTO){
         return new ResponseEntity<>(pixService.updatePix(id,pixDTO), HttpStatus.OK);
     }
 
@@ -38,35 +43,29 @@ public class PixController {
         return new ResponseEntity<>(pixService.findById(id),HttpStatus.OK);
     }
 
-//    @GetMapping("/findByKeyType/{keyType}")
-//    public ResponseEntity<List<SearchPixResponseDTO>> findByKeyType(@PathVariable String keyType){
-//        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByKeyType(keyType),HttpStatus.OK);
-//
-//        try{
-//
-//        }catch(Exception ex){
-//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @GetMapping("/findByKeyType/{keyType}")
+    public ResponseEntity<List<SearchPixResponseDTO>> findByKeyType(@PathVariable KeyType keyType){
+        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByKeyType(keyType),HttpStatus.OK);
+    }
 
-//    @GetMapping("/findByAgencyAndAccount/{agencyAndAccount}")
-//    public ResponseEntity<SearchPixResponseDTO> findByAgencyAndAccount(@PathVariable String agencyAndAccount){
-//        return new ResponseEntity<SearchPixResponseDTO>(pixService.findByAgencyAndAccount(agencyAndAccount),HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/findByAccountHolderName/{accountHolderName}")
-//    public ResponseEntity<SearchPixResponseDTO> findByAccountHolderName(@PathVariable String accountHolderName ){
-//        return new ResponseEntity<SearchPixResponseDTO>(pixService.findByAccountHolderName(accountHolderName),HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/findByKeyInclusionDate/{keyInclusionDate}")
-//    public ResponseEntity<SearchPixResponseDTO> findByKeyInclusionDate(@PathVariable String keyInclusionDate){
-//        return new ResponseEntity<SearchPixResponseDTO>(pixService.findByKeyInclusionDate(keyInclusionDate),HttpStatus.OK);
-//    }
+    @GetMapping("/findByAgencyAndAccount/{agency}/{account}")
+    public ResponseEntity<List<SearchPixResponseDTO>> findByAgencyAndAccount(@PathVariable String agency,@PathVariable String account){
+        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByAgencyAndAccount(agency, account),HttpStatus.OK);
+    }
 
-//    @GetMapping("/findByKeyInactivationDate/{keyInactivationDate}")
-//    public ResponseEntity<List<SearchPixResponseDTO>> findByKeyInactivationDate(@PathVariable String keyInactivationDate){
-//        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByKeyInactivationDate(keyInactivationDate),HttpStatus.OK);
-//    }
+    @GetMapping("/findByAccountHolderName/{accountHolderName}")
+    public ResponseEntity<List<SearchPixResponseDTO>> findByAccountHolderName(@PathVariable String accountHolderName ){
+        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByAccountHolderName(accountHolderName),HttpStatus.OK);
+    }
+
+    @GetMapping("/findByKeyInclusionDate/{keyInclusionDate}")
+    public ResponseEntity<List<SearchPixResponseDTO>> findByKeyInclusionDate(@PathVariable String inclusionDate){
+        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByInclusionDate(Date.valueOf(inclusionDate)),HttpStatus.OK);
+    }
+
+    @GetMapping("/findByKeyInactivationDate/{keyInactivationDate}")
+    public ResponseEntity<List<SearchPixResponseDTO>> findByKeyInactivationDate(@PathVariable String inactivationDate){
+        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByInactivationDate(Date.valueOf(inactivationDate)),HttpStatus.OK);
+    }
 
 }

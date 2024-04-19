@@ -8,17 +8,14 @@ import lombok.*;
 import java.util.Date;
 import java.util.UUID;
 
-
-@Getter
-@Setter
-@Entity
+@Data
 @Builder
-@Table(name="PixRegistry")
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@Table(name="PixRegistry")
 @EqualsAndHashCode(of = "id")
-public class Pix {
+@Entity
+public class PixEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
