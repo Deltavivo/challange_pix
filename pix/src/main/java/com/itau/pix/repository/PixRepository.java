@@ -18,4 +18,5 @@ public interface PixRepository extends JpaRepository<PixEntity, UUID> {
     List<PixEntity> findByAccountHolderName(String accountHolderName);
     List<PixEntity> findByDateTimeKeyIncluded(Date dateTimeKeyIncluded);
     List<PixEntity> findByDateTimeKeyInactivation(Date dateTimeKeyInactivation);
+	PixEntity findByKeyTypeAndKeyValue(KeyType keyType, String keyValue);
 }

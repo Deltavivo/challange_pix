@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="PixRegistry")
+@Table(name="record")
 @EqualsAndHashCode(of = "id")
 @Entity
 public class PixEntity {
@@ -23,19 +23,27 @@ public class PixEntity {
 
     @Column(length = 9)
     private KeyType keyType;
+
     @Column(length = 99)
     private String keyValue;
+
     @Column(length = 10)
     private AccountType accountType;
+
     @Column(length = 4)
     private String agency;
+
     @Column(length = 8)
     private String account;
+
     @Column(length = 30)
     private String accountHolderName;
+
     @Column(length = 45)
     private String accountHolderSurname;
+
     private Date dateTimeKeyIncluded;
+
     private Date dateTimeKeyInactivation;
 
 }

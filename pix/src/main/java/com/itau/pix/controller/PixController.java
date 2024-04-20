@@ -35,7 +35,7 @@ public class PixController {
 
     @PutMapping("/inactive/{id}")
     public ResponseEntity<DeletePixResponseDTO> inactivePix(@PathVariable String id){
-        return new ResponseEntity<>(pixService.deletePix(id),HttpStatus.OK);
+        return new ResponseEntity<>(pixService.inactivePix(id),HttpStatus.OK);
     }
 
     @GetMapping("/findById/{id}")
@@ -59,12 +59,12 @@ public class PixController {
     }
 
     @GetMapping("/findByKeyInclusionDate/{keyInclusionDate}")
-    public ResponseEntity<List<SearchPixResponseDTO>> findByKeyInclusionDate(@PathVariable String inclusionDate){
+    public ResponseEntity<List<SearchPixResponseDTO>> findByInclusionDate(@PathVariable String inclusionDate){
         return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByInclusionDate(Date.valueOf(inclusionDate)),HttpStatus.OK);
     }
 
     @GetMapping("/findByKeyInactivationDate/{keyInactivationDate}")
-    public ResponseEntity<List<SearchPixResponseDTO>> findByKeyInactivationDate(@PathVariable String inactivationDate){
+    public ResponseEntity<List<SearchPixResponseDTO>> findByInactivationDate(@PathVariable String inactivationDate){
         return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByInactivationDate(Date.valueOf(inactivationDate)),HttpStatus.OK);
     }
 

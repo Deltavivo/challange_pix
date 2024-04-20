@@ -6,7 +6,7 @@ import com.itau.pix.entities.PixEntity;
 import com.itau.pix.enums.KeyType;
 import com.itau.pix.exceptions.UnsupportedPixException;
 import com.itau.pix.repository.PixRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -14,22 +14,26 @@ import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.toCollection;
 
-
+@RequiredArgsConstructor
 @Service
 public class PixService {
 
-    @Autowired
-    private PixRepository repository;
+    private final PixRepository repository;
 
     private final PixEntityToSearchPixResponseDTO toApi;
-
-    public PixService(PixEntityToSearchPixResponseDTO toApi) {
-        this.toApi = toApi;
-    }
 
     public CreatePixResponseDTO createPix(CreatePixRequestDTO pixDTO) {
 
         //TODO:verify if the key exist
+        if(existPix(pixDTO.getKeyType(),pixDTO.getKeyValue())){
+            //log.info("Key PIX already exists! ", pixDTO.getKeyValue());
+            throw new UnsupportedPixException("Key PIX already exists!");
+        }
+
+        if(!isValid(pixDTO.getKeyType(), pixDTO.getKeyValue())){
+            //log.info("Key PIX is not valid! ", pixDTO.getKeyValue());
+            throw new UnsupportedPixException("Key PIX is not valid!");
+        }
 
         PixEntity pix = PixEntity.builder()
                 .keyType(pixDTO.getKeyType())
@@ -111,7 +115,7 @@ public class PixService {
         throw new UnsupportedPixException("Registro nao encontrado.");
     }
 
-    public DeletePixResponseDTO deletePix(String id){
+    public DeletePixResponseDTO inactivePix(String id){
 
         //verify if exist Pix
         Optional<PixEntity> pixData = repository.findById(UUID.fromString(id));
@@ -189,11 +193,11 @@ public class PixService {
     }
 
 
-    private static final String CELLPHONE_PATTERN = "(?:(?:\\+|00)55\\s?)?(?:\\(?([1-9][0-9])\\)?\\s?)?(?:((?:9\\d|[2-9])\\d{3})?(\\d{4}))$";
+    private static final String CELLPHONE_PATTERN = "(?:(?:\\+|00)55\\s?)?(\\d{3})?(?:((?:9\\d|[2-9])\\d{7}))$";
     private static final String EMAIL_PATTERN = "[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-    private static final String CPF_PATTERN = "/^\\d{11}$";
-    private static final String CNPJ_PATTERN = "/^\\d{14}$";
-    private static final String RANDOM_PATTERN = "/^[a-z][a-zA-Z0-9]{36}";
+    private static final String CPF_PATTERN = "\\d{11}$";
+    private static final String CNPJ_PATTERN = "\\d{14}$";
+    private static final String RANDOM_PATTERN = "\\w{36}";
 
     private static final Pattern celPattern = Pattern.compile(CELLPHONE_PATTERN);
     private static final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
@@ -201,58 +205,42 @@ public class PixService {
     private static final Pattern cnpjPattern = Pattern.compile(CNPJ_PATTERN);
     private static final Pattern randomPattern = Pattern.compile(RANDOM_PATTERN);
 
-    private static boolean isCellphoneValid(String value){
-        Matcher celMatcher = celPattern.matcher(value);
-        return (celMatcher.matches());
+    private static boolean isValid(KeyType type, String value) {
+
+        switch (type) {
+            case CELULAR:
+                Matcher celMatcher = celPattern.matcher(value);
+                return (celMatcher.matches());
+
+            case EMAIL:
+                Matcher emailMatcher = emailPattern.matcher(value);
+                return (emailMatcher.matches());
+
+            case CPF:
+                Matcher cpfMatcher = cpfPattern.matcher(value);
+                return (cpfMatcher.matches());
+
+            case CNPJ:
+                Matcher cnpjMatcher = cnpjPattern.matcher(value);
+                return (cnpjMatcher.matches());
+
+            case ALEATORIO:
+                Matcher randomMatcher = randomPattern.matcher(value);
+                return (randomMatcher.matches());
+
+            default:
+                return false;
+
+        }
     }
 
-    private static boolean isEmailValid(String value){
-        Matcher emailMatcher = emailPattern.matcher(value);
-        return (emailMatcher.matches());
+    private boolean existPix(KeyType type, String value){
+        //validate if can save this new key
+        Optional<PixEntity> pixExists = Optional.ofNullable(repository.findByKeyTypeAndKeyValue(type, value));
+        if(pixExists.isPresent()){
+            return true;
+        }
+        return false;
     }
-
-    private static boolean isCPFValid(String value){
-        Matcher cpfMatcher = cpfPattern.matcher(value);
-        return (cpfMatcher.matches());
-    }
-
-    private static boolean isCNPJValid(String value){
-        Matcher cnpjMatcher = cnpjPattern.matcher(value);
-        return (cnpjMatcher.matches());
-    }
-
-    private static boolean isKeyValid(String value){
-        Matcher randomMatcher = randomPattern.matcher(value);
-        return (randomMatcher.matches());
-    }
-
-//    private static boolean isValid(String value, String type ) {
-//
-//        switch (type) {
-//            case "CELULAR":
-//                Matcher celMatcher = celPattern.matcher(value);
-//                return (celMatcher.matches());
-//
-//            case "EMAIL":
-//                Matcher emailMatcher = emailPattern.matcher(value);
-//                return (emailMatcher.matches());
-//
-//            case "CPF":
-//                Matcher cpfMatcher = cpfPattern.matcher(value);
-//                return (cpfMatcher.matches());
-//
-//            case "CNPJ":
-//                Matcher cnpjMatcher = cnpjPattern.matcher(value);
-//                return (cnpjMatcher.matches());
-//
-//            case "ALEATORIO":
-//                Matcher randomMatcher = randomPattern.matcher(value);
-//                return (randomMatcher.matches());
-//
-//            default:
-//                return false;
-//
-//        }
-//    }
 
 }
