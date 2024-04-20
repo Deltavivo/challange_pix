@@ -34,7 +34,7 @@ public class PixController {
     }
 
     @PutMapping("/inactive/{id}")
-    public ResponseEntity<DeletePixResponseDTO> inactivePix(@PathVariable String id){
+    public ResponseEntity<InactivePixResponseDTO> inactivePix(@PathVariable String id){
         return new ResponseEntity<>(pixService.inactivePix(id),HttpStatus.OK);
     }
 

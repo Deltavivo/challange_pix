@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +29,7 @@ class PixControllerTest {
     @Mock
     PixService service;
 
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
 
     @Test
     void createPixSucess() {
@@ -89,13 +88,13 @@ class PixControllerTest {
     @Test
     void inactivePix() {
 
-        DeletePixResponseDTO response = DeletePixResponseDTO.builder()
+        InactivePixResponseDTO response = InactivePixResponseDTO.builder()
                 .id(uuid)
                 .build();
 
         Mockito.when(service.inactivePix(any())).thenReturn(response);
 
-        ResponseEntity<DeletePixResponseDTO> rep = controller.inactivePix(uuid.toString());
+        ResponseEntity<InactivePixResponseDTO> rep = controller.inactivePix(uuid.toString());
 
         assertEquals(HttpStatus.OK, rep.getStatusCode());
         assertEquals(response, rep.getBody());

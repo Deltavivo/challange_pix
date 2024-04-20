@@ -80,6 +80,7 @@ public class PixService {
 
     public UpdatePixResponseDTO updatePix(String id, UpdatePixRequestDTO pixDTO) {
         //verify if the key exist
+
         Optional<PixEntity> pixData = repository.findById(UUID.fromString(id));
 
         //verify if the key is inactive
@@ -115,7 +116,7 @@ public class PixService {
         throw new UnsupportedPixException("Registro nao encontrado.");
     }
 
-    public DeletePixResponseDTO inactivePix(String id){
+    public InactivePixResponseDTO inactivePix(String id){
 
         //verify if exist Pix
         Optional<PixEntity> pixData = repository.findById(UUID.fromString(id));
@@ -135,7 +136,7 @@ public class PixService {
             repository.save(updatedPix);
 
             //create response dto
-            return DeletePixResponseDTO.builder()
+            return InactivePixResponseDTO.builder()
                     .id(pixData.get().getId())
                     .accountType(pixData.get().getAccountType())
                     .keyType(pixData.get().getKeyType())

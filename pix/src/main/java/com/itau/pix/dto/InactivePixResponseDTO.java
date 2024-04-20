@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DeletePixResponseDTO {
+public class InactivePixResponseDTO {
     private UUID id;
     private KeyType keyType;
     private String keyValue;
