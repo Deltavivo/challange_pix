@@ -16,7 +16,6 @@ import org.hibernate.validator.constraints.Range;
 @ToString
 public class UpdatePixRequestDTO {
 
-    @NotEmpty @NotNull
     private AccountType accountType;
 
     @Size(max = 4) @NotEmpty @NotNull @NotBlank
