@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +35,8 @@ class PixServiceTest {
     private final UUID uuid = UUID.randomUUID();
 
     private final Date date = Calendar.getInstance().getTime();
+
+    private final SimpleDateFormat textFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Test
     void createPixSuccess() {
@@ -211,7 +214,7 @@ class PixServiceTest {
     }
 
     @Test
-    void createPixInvalid(){
+    void createPixAlreadyExist(){
 
         CreatePixRequestDTO request = CreatePixRequestDTO.builder()
                 .accountType(AccountType.CORRENTE)
@@ -242,7 +245,41 @@ class PixServiceTest {
                 UnsupportedPixException.class,
                 () -> service.createPix(request),"");
 
-        assertTrue(thrown.getMessage().contains("Key PIX already exists!"));
+        assertTrue(thrown.getMessage().contains("Chave PIX já existe!"));
+    }
+
+    @Test
+    void createPixInvalid(){
+
+        CreatePixRequestDTO request = CreatePixRequestDTO.builder()
+                .accountType(AccountType.CORRENTE)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Julio")
+                .accountHolderSurname("Aguiar")
+                .keyType(KeyType.CPF)
+                .keyValue("638483729433")
+                .build();
+
+        PixEntity pix = PixEntity.builder()
+                .id(uuid)
+                .accountType(AccountType.CORRENTE)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Julio")
+                .accountHolderSurname("Aguiar")
+                .keyType(KeyType.CPF)
+                .keyValue("63848372943")
+                .dateTimeKeyIncluded(Calendar.getInstance().getTime())
+                .dateTimeKeyInactivation(null)
+                .build();
+
+        Mockito.when(repository.findByKeyTypeAndKeyValue(any(),any())).thenReturn(null);
+        //Fail save in database new pix
+        UnsupportedPixException thrown = assertThrows(
+                UnsupportedPixException.class,
+                () -> service.createPix(request),"");
+        assertTrue(thrown.getMessage().contains("Chave PIX não é valida!"));
     }
 
     @Test
@@ -329,6 +366,72 @@ class PixServiceTest {
     }
 
     @Test
+    void updatePixInvalid() {
+
+        UpdatePixRequestDTO request = UpdatePixRequestDTO.builder()
+                .accountType(AccountType.POUPANCA)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Julio")
+                .accountHolderSurname("Aguiar Moreira")
+                .build();
+
+        PixEntity pix = PixEntity.builder()
+                .id(uuid)
+                .accountType(AccountType.POUPANCA)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Julio")
+                .accountHolderSurname("Aguiar Moreira")
+                .keyType(KeyType.CPF)
+                .keyValue("63848372943")
+                .dateTimeKeyIncluded(Calendar.getInstance().getTime())
+                .dateTimeKeyInactivation(null)
+                .build();
+
+        Mockito.when(repository.findById(any())).thenReturn(Optional.empty());
+
+        UnsupportedPixException thrown = assertThrows(
+                UnsupportedPixException.class,
+                () -> service.updatePix(uuid.toString(),request),"");
+        assertTrue(thrown.getMessage().contains("Registro PIX não encontrado."));
+
+    }
+
+    @Test
+    void updatePixInactive() {
+
+        UpdatePixRequestDTO request = UpdatePixRequestDTO.builder()
+                .accountType(AccountType.POUPANCA)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Julio")
+                .accountHolderSurname("Aguiar Moreira")
+                .build();
+
+        PixEntity pix = PixEntity.builder()
+                .id(uuid)
+                .accountType(AccountType.POUPANCA)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Julio")
+                .accountHolderSurname("Aguiar Moreira")
+                .keyType(KeyType.CPF)
+                .keyValue("63848372943")
+                .dateTimeKeyIncluded(Calendar.getInstance().getTime())
+                .dateTimeKeyInactivation(Calendar.getInstance().getTime())
+                .build();
+
+        Mockito.when(repository.findById(any())).thenReturn(Optional.ofNullable(pix));
+
+        UnsupportedPixException thrown = assertThrows(
+                UnsupportedPixException.class,
+                () -> service.updatePix(uuid.toString(),request),"");
+        assertTrue(thrown.getMessage().contains("Registro PIX inativo."));
+
+    }
+
+    @Test
     void inactivePix() {
 
         PixEntity pix = PixEntity.builder()
@@ -351,6 +454,41 @@ class PixServiceTest {
         assertEquals(uuid, response.getId());
         assertNotNull(response.getDateTimeKeyInactivation());
 
+    }
+
+    @Test
+    void inactivePixInvalid(){
+
+        CreatePixRequestDTO request = CreatePixRequestDTO.builder()
+                .accountType(AccountType.CORRENTE)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Julio")
+                .accountHolderSurname("Aguiar")
+                .keyType(KeyType.CPF)
+                .keyValue("63848372943")
+                .build();
+
+        PixEntity pix = PixEntity.builder()
+                .id(uuid)
+                .accountType(AccountType.CORRENTE)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Julio")
+                .accountHolderSurname("Aguiar")
+                .keyType(KeyType.CPF)
+                .keyValue("63848372943")
+                .dateTimeKeyIncluded(date)
+                .dateTimeKeyInactivation(date)
+                .build();
+
+        Mockito.when(repository.findById(any())).thenReturn(Optional.ofNullable(pix));
+        //Fail save in database new pix
+        UnsupportedPixException thrown = assertThrows(
+                UnsupportedPixException.class,
+                () -> service.inactivePix(uuid.toString()),"");
+
+        assertTrue(thrown.getMessage().contains("Registro PIX já está inativo."));
     }
 
     @Test
@@ -567,9 +705,10 @@ class PixServiceTest {
     @Test
     void findByInclusionDate() {
 
+
         Mockito.when(repository.findByDateTimeKeyIncluded(any())).thenReturn(getPixEntity());
         Mockito.when(toApi.apply(any())).thenReturn(getSearchPixResponseDTO());
-        List<SearchPixResponseDTO> responseList = service.findByInclusionDate(date);
+        List<SearchPixResponseDTO> responseList = service.findByInclusionDate(textFormat.format(date).toString());
 
         assertEquals(uuid, responseList.get(0).getId());
         assertEquals(date,responseList.get(0).getDateTimeKeyIncluded());
@@ -611,7 +750,7 @@ class PixServiceTest {
 
         Mockito.when(repository.findByDateTimeKeyInactivation(any())).thenReturn(dataList);
         Mockito.when(toApi.apply(any())).thenReturn(response);
-        List<SearchPixResponseDTO> responseList = service.findByInactivationDate(date);
+        List<SearchPixResponseDTO> responseList = service.findByInactivationDate(textFormat.format(date).toString());
 
         assertEquals(uuid, responseList.get(0).getId());
         assertEquals(date,responseList.get(0).getDateTimeKeyInactivation());
