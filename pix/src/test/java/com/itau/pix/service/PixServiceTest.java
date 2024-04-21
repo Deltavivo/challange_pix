@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +33,8 @@ class PixServiceTest {
     private PixEntityToSearchPixResponseDTO toApi;
 
     private final UUID uuid = UUID.randomUUID();
+
+    private final Date date = Calendar.getInstance().getTime();
 
     @Test
     void createPixSuccess() {
@@ -216,62 +219,136 @@ class PixServiceTest {
     @Test
     void findByKeyType() {
 
-//        List<PixEntity> responseList = new ArrayList<>();
-//
-//        UUID uuid2 = UUID.randomUUID();
-//
-//        PixEntity pix1 = PixEntity.builder()
-//                .id(uuid)
-//                .accountType(AccountType.CORRENTE)
-//                .agency("1234")
-//                .account("54321")
-//                .accountHolderName("Patricia")
-//                .accountHolderSurname("Junqueira")
-//                .keyType(KeyType.CPF)
-//                .keyValue("63848372943")
-//                .dateTimeKeyIncluded(Calendar.getInstance().getTime())
-//                .dateTimeKeyInactivation(null)
-//                .build();
-//
-//        PixEntity pix2 = PixEntity.builder()
-//                .id(uuid2)
-//                .accountType(AccountType.CORRENTE)
-//                .agency("1234")
-//                .account("54321")
-//                .accountHolderName("Tulio")
-//                .accountHolderSurname("Sodre")
-//                .keyType(KeyType.CPF)
-//                .keyValue("83027502423")
-//                .dateTimeKeyIncluded(Calendar.getInstance().getTime())
-//                .dateTimeKeyInactivation(null)
-//                .build();
-//
-//        responseList.add(pix1);
-//        responseList.add(pix2);
-//
-//        Mockito.when(repository.findByKeyType(any())).thenReturn(responseList);
-//        List<SearchPixResponseDTO> response = service.findByKeyType(KeyType.CPF);
-//
-//        assertEquals(uuid, response.get(0).getId());
-//        assertEquals(uuid2, response.get(1).getId());
-//        assertEquals(response.get(0).getKeyType(),response.get(1).getKeyType());
-//        assertNotEquals(response.get(0).getKeyValue(), response.get(1).getKeyValue());
+        SearchPixResponseDTO response = SearchPixResponseDTO.builder()
+                .id(uuid)
+                .accountType(AccountType.CORRENTE)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Tulio")
+                .accountHolderSurname("Sodre")
+                .keyType(KeyType.CPF)
+                .keyValue("83027502423")
+                .dateTimeKeyIncluded(Calendar.getInstance().getTime())
+                .dateTimeKeyInactivation(null)
+                .build();
+
+        Mockito.when(repository.findByKeyType(any())).thenReturn(getPixEntity());
+        Mockito.when(toApi.apply(any())).thenReturn(response);
+        List<SearchPixResponseDTO> responseList = service.findByKeyType(KeyType.CPF);
+
+        assertEquals(uuid, responseList.get(0).getId());
 
     }
 
     @Test
     void findByAgencyAndAccount() {
+
+        Mockito.when(repository.findByAgencyAndAccount(any(),any())).thenReturn(getPixEntity());
+        Mockito.when(toApi.apply(any())).thenReturn(getSearchPixResponseDTO());
+        List<SearchPixResponseDTO> responseList = service.findByAgencyAndAccount("1234","54321");
+
+        assertEquals(uuid, responseList.get(0).getId());
+        assertEquals("1234",responseList.get(0).getAgency());
+        assertEquals("54321",responseList.get(0).getAccount());
     }
 
     @Test
     void findByAccountHolderName() {
+        Mockito.when(repository.findByAccountHolderName(any())).thenReturn(getPixEntity());
+        Mockito.when(toApi.apply(any())).thenReturn(getSearchPixResponseDTO());
+        List<SearchPixResponseDTO> responseList = service.findByAccountHolderName("Patricia");
+
+        assertEquals(uuid, responseList.get(0).getId());
+        assertEquals("1234",responseList.get(0).getAgency());
+        assertEquals("54321",responseList.get(0).getAccount());
     }
 
     @Test
     void findByInclusionDate() {
+
+        Mockito.when(repository.findByDateTimeKeyIncluded(any())).thenReturn(getPixEntity());
+        Mockito.when(toApi.apply(any())).thenReturn(getSearchPixResponseDTO());
+        List<SearchPixResponseDTO> responseList = service.findByInclusionDate(date);
+
+        assertEquals(uuid, responseList.get(0).getId());
+        assertEquals(date,responseList.get(0).getDateTimeKeyIncluded());
     }
 
     @Test
     void findByInactivationDate() {
+
+        List<PixEntity> dataList = new ArrayList<>();
+
+        PixEntity pix1 = PixEntity.builder()
+                .id(uuid)
+                .accountType(AccountType.CORRENTE)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Tulio")
+                .accountHolderSurname("Sodre")
+                .keyType(KeyType.CPF)
+                .keyValue("83027502423")
+                .dateTimeKeyIncluded(date)
+                .dateTimeKeyInactivation(date)
+                .build();
+
+        dataList.add(pix1);
+
+        SearchPixResponseDTO response = SearchPixResponseDTO.builder()
+                .id(uuid)
+                .accountType(AccountType.CORRENTE)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Tulio")
+                .accountHolderSurname("Sodre")
+                .keyType(KeyType.CPF)
+                .keyValue("83027502423")
+                .dateTimeKeyIncluded(Calendar.getInstance().getTime())
+                .dateTimeKeyInactivation(date)
+                .build();
+
+
+        Mockito.when(repository.findByDateTimeKeyInactivation(any())).thenReturn(dataList);
+        Mockito.when(toApi.apply(any())).thenReturn(response);
+        List<SearchPixResponseDTO> responseList = service.findByInactivationDate(date);
+
+        assertEquals(uuid, responseList.get(0).getId());
+        assertEquals(date,responseList.get(0).getDateTimeKeyInactivation());
+    }
+
+    public List<PixEntity> getPixEntity(){
+        List<PixEntity> dataList = new ArrayList<>();
+
+        PixEntity pix1 = PixEntity.builder()
+                .id(uuid)
+                .accountType(AccountType.CORRENTE)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Tulio")
+                .accountHolderSurname("Sodre")
+                .keyType(KeyType.CPF)
+                .keyValue("83027502423")
+                .dateTimeKeyIncluded(date)
+                .dateTimeKeyInactivation(null)
+                .build();
+
+        dataList.add(pix1);
+        return dataList;
+    }
+
+    private SearchPixResponseDTO getSearchPixResponseDTO(){
+
+        return SearchPixResponseDTO.builder()
+                .id(uuid)
+                .accountType(AccountType.CORRENTE)
+                .agency("1234")
+                .account("54321")
+                .accountHolderName("Tulio")
+                .accountHolderSurname("Sodre")
+                .keyType(KeyType.CPF)
+                .keyValue("83027502423")
+                .dateTimeKeyIncluded(date)
+                .dateTimeKeyInactivation(null)
+                .build();
     }
 }
