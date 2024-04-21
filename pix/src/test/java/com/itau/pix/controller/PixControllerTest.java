@@ -100,7 +100,6 @@ class PixControllerTest {
         assertEquals(response, rep.getBody());
     }
 
-
     @Test
     void findByID() {
 

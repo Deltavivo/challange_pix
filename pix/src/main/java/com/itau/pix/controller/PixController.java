@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.itau.pix.service.PixService;
 
-import java.sql.Date;
 import java.util.List;
 
 @RestController
@@ -58,14 +57,13 @@ public class PixController {
         return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByAccountHolderName(accountHolderName),HttpStatus.OK);
     }
 
-    @GetMapping("/findByKeyInclusionDate/{keyInclusionDate}")
-    public ResponseEntity<List<SearchPixResponseDTO>> findByInclusionDate(@PathVariable String inclusionDate){
-        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByInclusionDate(Date.valueOf(inclusionDate)),HttpStatus.OK);
+    @GetMapping("/findByKeyInclusionDate/{inclusionDate}")
+    public ResponseEntity<List<SearchPixResponseDTO>> findByInclusionDate(@PathVariable String inclusionDate ) {
+        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByInclusionDate(inclusionDate),HttpStatus.OK);
     }
 
-    @GetMapping("/findByKeyInactivationDate/{keyInactivationDate}")
-    public ResponseEntity<List<SearchPixResponseDTO>> findByInactivationDate(@PathVariable String inactivationDate){
-        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByInactivationDate(Date.valueOf(inactivationDate)),HttpStatus.OK);
+    @GetMapping("/findByKeyInactivationDate/{inactivationDate}")
+    public ResponseEntity<List<SearchPixResponseDTO>> findByInactivationDate(@PathVariable String inactivationDate) {
+        return new ResponseEntity<List<SearchPixResponseDTO>>(pixService.findByInactivationDate(inactivationDate),HttpStatus.OK);
     }
-
 }

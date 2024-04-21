@@ -7,16 +7,26 @@ import com.itau.pix.enums.KeyType;
 import com.itau.pix.exceptions.UnsupportedPixException;
 import com.itau.pix.repository.PixRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 import static java.util.stream.Collectors.toCollection;
 
 @RequiredArgsConstructor
 @Service
 public class PixService {
+
+    private final SimpleDateFormat textFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+    private static final Logger log= LoggerFactory.getLogger(PixService.class);
 
     private final PixRepository repository;
 
@@ -26,13 +36,13 @@ public class PixService {
 
         //TODO:verify if the key exist
         if(existPix(pixDTO.getKeyType(),pixDTO.getKeyValue())){
-            //log.info("Key PIX already exists! ", pixDTO.getKeyValue());
-            throw new UnsupportedPixException("Key PIX already exists!");
+            log.error("Key PIX already exists! KeyValue: " + pixDTO.getKeyValue());
+            throw new UnsupportedPixException("Chave PIX já existe!");
         }
 
         if(!isValid(pixDTO.getKeyType(), pixDTO.getKeyValue())){
-            //log.info("Key PIX is not valid! ", pixDTO.getKeyValue());
-            throw new UnsupportedPixException("Key PIX is not valid!");
+            log.error("Key PIX is not valid! KeyValue: " + pixDTO.getKeyValue());
+            throw new UnsupportedPixException("Chave PIX não é valida!");
         }
 
         PixEntity pix = PixEntity.builder()
@@ -43,15 +53,13 @@ public class PixService {
                 .agency(pixDTO.getAgency())
                 .accountHolderName(pixDTO.getAccountHolderName())
                 .accountHolderSurname(pixDTO.getAccountHolderSurname())
-                .dateTimeKeyIncluded(Calendar.getInstance().getTime()).build();
+                .dateTimeKeyIncluded(getDate()).build();
 
         //save in database
         PixEntity pixSaved = repository.save(pix);
+        log.info("New PIX create with success! ID: " + pix.getId());
 
-        //TODO:verify if is valid
         return CreatePixResponseDTO.builder().id(pixSaved.getId()).build();
-
-        //TODO:verify if is CPF or CNPJ and the limit to create
 
     }
 
@@ -60,6 +68,8 @@ public class PixService {
         Optional<PixEntity> pixData = repository.findById(UUID.fromString(id));
 
         if(pixData.isPresent()){
+            log.info("PIX found with success! ID: " + pixData.get().getId());
+
             return SearchPixResponseDTO.builder()
                     .id(pixData.get().getId())
                     .accountType(pixData.get().getAccountType())
@@ -74,8 +84,8 @@ public class PixService {
 
         }
 
+        log.error("Registry not found. ID: " + id);
         throw new UnsupportedPixException("Registro nao encontrado.");
-
     }
 
     public UpdatePixResponseDTO updatePix(String id, UpdatePixRequestDTO pixDTO) {
@@ -83,12 +93,20 @@ public class PixService {
 
         Optional<PixEntity> pixData = repository.findById(UUID.fromString(id));
 
+        if(pixData.isEmpty()){
+            log.info("PIX not found. ID: " + id);
+            throw new UnsupportedPixException("Registro PIX não encontrado.");
+        }
+
         //verify if the key is inactive
         if(!(pixData.get().getDateTimeKeyInactivation() == null)){
+            log.info("PIX is inactive! ID: " + id);
             throw new UnsupportedPixException("Registro PIX inativo.");
         }
         //cant update id, type or value of key
         if(pixData.isPresent()){
+            log.info("PIX found with success! ID: " + pixData.get().getId());
+
             PixEntity updatePix = PixEntity.builder()
                     .keyType(pixData.get().getKeyType())
                     .keyValue(pixData.get().getKeyValue())
@@ -100,6 +118,7 @@ public class PixService {
                     .dateTimeKeyIncluded(Calendar.getInstance().getTime()).build();
 
             repository.save(updatePix);
+            log.info("PIX updated with success! ID: " + updatePix.getId());
 
             return UpdatePixResponseDTO.builder()
                     .id(updatePix.getId())
@@ -113,6 +132,7 @@ public class PixService {
                     .dateTimeKeyIncluded(updatePix.getDateTimeKeyIncluded()).build();
 
         }
+        log.error("Registry not found. ID: " + id);
         throw new UnsupportedPixException("Registro nao encontrado.");
     }
 
@@ -123,9 +143,12 @@ public class PixService {
 
         if(pixData.isPresent()){
 
+            log.info("PIX found with success! ID: " + pixData.get().getId());
+
             //verify if pix was inactive
             if(!(pixData.get().getDateTimeKeyInactivation() == null)){
-                throw new UnsupportedPixException("Registro PIX inativo.");
+                log.error("PIX registration is already inactive. ID: " + pixData.get().getId());
+                throw new UnsupportedPixException("Registro PIX já está inativo.");
             }
 
             //update inactivate data
@@ -134,6 +157,7 @@ public class PixService {
 
             //save in database
             repository.save(updatedPix);
+            log.info("PIX saved with success! ID: " + updatedPix.getId());
 
             //create response dto
             return InactivePixResponseDTO.builder()
@@ -149,11 +173,13 @@ public class PixService {
                     .dateTimeKeyInactivation(Calendar.getInstance().getTime()).build();
 
         }
+        log.error("Registry not found. ID: " + pixData.get().getId());
         throw new UnsupportedPixException("Registro nao encontrado.");
     }
 
     public List<SearchPixResponseDTO> findByKeyType(KeyType keyType){
 
+        log.info("Search by KeyType: " + keyType);
         return repository.findByKeyType(keyType)
                 .stream()
                 .map(toApi)
@@ -163,6 +189,7 @@ public class PixService {
 
     public List<SearchPixResponseDTO> findByAgencyAndAccount(String agency, String account){
 
+        log.info("Search by Agency:" + agency +" and Account: " + account);
         return repository.findByAgencyAndAccount(agency, account)
                 .stream()
                 .map(toApi)
@@ -171,28 +198,46 @@ public class PixService {
 
     public List<SearchPixResponseDTO> findByAccountHolderName(String accountHolderName){
 
+        log.info("Search by holder name: " + accountHolderName);
         return repository.findByAccountHolderName(accountHolderName)
                 .stream()
                 .map(toApi)
                 .collect(toCollection(ArrayList::new));
     }
 
-    public List<SearchPixResponseDTO> findByInclusionDate(Date dateTimeKeyIncluded){
+    public List<SearchPixResponseDTO> findByInclusionDate(String dateTimeKeyIncluded) {
 
-        return repository.findByDateTimeKeyIncluded(dateTimeKeyIncluded)
+        Date date;
+
+        try {
+            date = textFormat.parse(dateTimeKeyIncluded);
+        } catch (ParseException ex) {
+            throw new UnsupportedPixException("A data informada é inválida. Utilize o padrão yyyy-MM-dd.");
+        }
+
+        log.info("Search by inclusion date: " + dateTimeKeyIncluded);
+        return repository.findByDateTimeKeyIncluded(date)
                 .stream()
                 .map(toApi)
                 .collect(toCollection(ArrayList::new));
     }
 
-    public List<SearchPixResponseDTO> findByInactivationDate(Date dateTimeKeyInactivation){
+    public List<SearchPixResponseDTO> findByInactivationDate(String dateTimeKeyInactivation){
 
-        return repository.findByDateTimeKeyInactivation(dateTimeKeyInactivation)
+        Date date;
+
+        try {
+            date = textFormat.parse(dateTimeKeyInactivation);
+        } catch (ParseException ex) {
+            throw new UnsupportedPixException("A data informada é inválida. Utilize o padrão yyyy-MM-dd.");
+        }
+
+        log.info("Search by inactivation date: " + dateTimeKeyInactivation);
+        return repository.findByDateTimeKeyInactivation(date)
                 .stream()
                 .map(toApi)
                 .collect(toCollection(ArrayList::new));
     }
-
 
     private static final String CELLPHONE_PATTERN = "(?:(?:\\+|00)55\\s?)?(\\d{3})?(?:((?:9\\d|[2-9])\\d{7}))$";
     private static final String EMAIL_PATTERN = "[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -243,5 +288,18 @@ public class PixService {
         }
         return false;
     }
+
+    private Date getDate(){
+
+        Date date = new Date();
+
+        try {
+            date = textFormat.parse(new Date().toString());
+        } catch (ParseException ex) {
+            
+        }
+        return date;
+    }
+
 
 }
