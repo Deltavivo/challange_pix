@@ -42,8 +42,10 @@ public class PixEntity {
     @Column(length = 45)
     private String accountHolderSurname;
 
+    @Temporal(TemporalType.DATE)
     private Date dateTimeKeyIncluded;
 
+    @Temporal(TemporalType.DATE)
     private Date dateTimeKeyInactivation;
 
 }
