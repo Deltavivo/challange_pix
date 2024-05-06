@@ -50,8 +50,6 @@ public class PixService {
         }
 
         try{
-
-            KeyType teste = validationFactory.
             validationFactory.getValidation(pixDTO.getKeyType()).execute(pixDTO);
         } catch(Exception e){
             throw new UnexpectedTypeException();

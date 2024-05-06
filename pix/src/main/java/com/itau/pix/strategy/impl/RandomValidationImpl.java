@@ -4,10 +4,12 @@ import com.itau.pix.dto.CreatePixRequestDTO;
 import com.itau.pix.enums.KeyType;
 import com.itau.pix.exceptions.UnsupportedPixException;
 import com.itau.pix.strategy.PixStrategy;
+import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class RandomValidationImpl implements PixStrategy {
 
     private static final String RANDOM_PATTERN = "\\w{36}";

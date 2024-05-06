@@ -5,10 +5,12 @@ import com.itau.pix.enums.KeyType;
 import com.itau.pix.exceptions.UnexpectedTypeException;
 import com.itau.pix.exceptions.UnsupportedPixException;
 import com.itau.pix.strategy.PixStrategy;
+import org.springframework.stereotype.Component;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class CellphoneValidationImpl implements PixStrategy {
 
     private static final String CELLPHONE_PATTERN = "(?:(?:\\+|00)55\\s?)?(\\d{3})?(?:((?:9\\d|[2-9])\\d{7}))$";
