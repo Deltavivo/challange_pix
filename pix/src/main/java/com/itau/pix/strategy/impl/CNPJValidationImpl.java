@@ -5,11 +5,12 @@ import com.itau.pix.enums.KeyType;
 import com.itau.pix.exceptions.UnsupportedPixException;
 import com.itau.pix.strategy.PixStrategy;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
+@Service
 public class CNPJValidationImpl implements PixStrategy {
 
     private static final String CNPJ_PATTERN = "\\d{14}$";
