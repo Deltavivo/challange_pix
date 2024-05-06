@@ -4,7 +4,9 @@ import com.itau.pix.converter.PixEntityToSearchPixResponseDTO;
 import com.itau.pix.dto.*;
 import com.itau.pix.entities.PixEntity;
 import com.itau.pix.enums.KeyType;
+import com.itau.pix.exceptions.UnexpectedTypeException;
 import com.itau.pix.exceptions.UnsupportedPixException;
+import com.itau.pix.strategy.factory.ValidationFactory;
 import com.itau.pix.repository.PixRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -14,13 +16,11 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 import static java.util.stream.Collectors.toCollection;
 
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Service
 public class PixService {
 
@@ -32,6 +32,15 @@ public class PixService {
 
     private final PixEntityToSearchPixResponseDTO toApi;
 
+    private final ValidationFactory validationFactory;
+
+    public PixService(PixRepository repository, PixEntityToSearchPixResponseDTO toApi, ValidationFactory validationFactory){
+
+        this.repository = repository;
+        this.toApi = toApi;
+        this.validationFactory = validationFactory;
+    }
+
     public CreatePixResponseDTO createPix(CreatePixRequestDTO pixDTO) {
 
         //TODO:verify if the key exist
@@ -40,10 +49,20 @@ public class PixService {
             throw new UnsupportedPixException("Chave PIX já existe!");
         }
 
-        if(!isValid(pixDTO.getKeyType(), pixDTO.getKeyValue())){
-            log.error("Key PIX is not valid! KeyValue: " + pixDTO.getKeyValue());
-            throw new UnsupportedPixException("Chave PIX não é valida!");
+        try{
+
+            KeyType teste = validationFactory.
+            validationFactory.getValidation(pixDTO.getKeyType()).execute(pixDTO);
+        } catch(Exception e){
+            throw new UnexpectedTypeException();
         }
+
+       // pixStrategies.forEach(validation -> validation.execute(pixDTO));
+
+//        if(!isValid(pixDTO.getKeyType(), pixDTO.getKeyValue())){
+//            log.error("Key PIX is not valid! KeyValue: " + pixDTO.getKeyValue());
+//            throw new UnsupportedPixException("Chave PIX não é valida!");
+//        }
 
         PixEntity pix = PixEntity.builder()
                 .keyType(pixDTO.getKeyType())
@@ -239,46 +258,46 @@ public class PixService {
                 .collect(toCollection(ArrayList::new));
     }
 
-    private static final String CELLPHONE_PATTERN = "(?:(?:\\+|00)55\\s?)?(\\d{3})?(?:((?:9\\d|[2-9])\\d{7}))$";
-    private static final String EMAIL_PATTERN = "[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-    private static final String CPF_PATTERN = "\\d{11}$";
-    private static final String CNPJ_PATTERN = "\\d{14}$";
-    private static final String RANDOM_PATTERN = "\\w{36}";
+//    private static final String CELLPHONE_PATTERN = "(?:(?:\\+|00)55\\s?)?(\\d{3})?(?:((?:9\\d|[2-9])\\d{7}))$";
+//    private static final String EMAIL_PATTERN = "[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+//    private static final String CPF_PATTERN = "\\d{11}$";
+//    private static final String CNPJ_PATTERN = "\\d{14}$";
+//    private static final String RANDOM_PATTERN = "\\w{36}";
+//
+//    private static final Pattern celPattern = Pattern.compile(CELLPHONE_PATTERN);
+//    private static final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
+//    private static final Pattern cpfPattern = Pattern.compile(CPF_PATTERN);
+//    private static final Pattern cnpjPattern = Pattern.compile(CNPJ_PATTERN);
+//    private static final Pattern randomPattern = Pattern.compile(RANDOM_PATTERN);
 
-    private static final Pattern celPattern = Pattern.compile(CELLPHONE_PATTERN);
-    private static final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
-    private static final Pattern cpfPattern = Pattern.compile(CPF_PATTERN);
-    private static final Pattern cnpjPattern = Pattern.compile(CNPJ_PATTERN);
-    private static final Pattern randomPattern = Pattern.compile(RANDOM_PATTERN);
-
-    private static boolean isValid(KeyType type, String value) {
-
-        switch (type) {
-            case CELULAR:
-                Matcher celMatcher = celPattern.matcher(value);
-                return (celMatcher.matches());
-
-            case EMAIL:
-                Matcher emailMatcher = emailPattern.matcher(value);
-                return (emailMatcher.matches());
-
-            case CPF:
-                Matcher cpfMatcher = cpfPattern.matcher(value);
-                return (cpfMatcher.matches());
-
-            case CNPJ:
-                Matcher cnpjMatcher = cnpjPattern.matcher(value);
-                return (cnpjMatcher.matches());
-
-            case ALEATORIO:
-                Matcher randomMatcher = randomPattern.matcher(value);
-                return (randomMatcher.matches());
-
-            default:
-                return false;
-
-        }
-    }
+//    private static boolean isValid(KeyType type, String value) {
+//
+//        switch (type) {
+//            case CELULAR:
+//                Matcher celMatcher = celPattern.matcher(value);
+//                return (celMatcher.matches());
+//
+//            case EMAIL:
+//                Matcher emailMatcher = emailPattern.matcher(value);
+//                return (emailMatcher.matches());
+//
+//            case CPF:
+//                Matcher cpfMatcher = cpfPattern.matcher(value);
+//                return (cpfMatcher.matches());
+//
+//            case CNPJ:
+//                Matcher cnpjMatcher = cnpjPattern.matcher(value);
+//                return (cnpjMatcher.matches());
+//
+//            case ALEATORIO:
+//                Matcher randomMatcher = randomPattern.matcher(value);
+//                return (randomMatcher.matches());
+//
+//            default:
+//                return false;
+//
+//        }
+//    }
 
     private boolean existPix(KeyType type, String value){
         //validate if can save this new key
