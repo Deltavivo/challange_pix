@@ -6,7 +6,7 @@
 ![Biblioteca usada](https://img.shields.io/badge/Biblioteca:-JPA-3c0064?style=for-the-badge)
 ![Biblioteca usada](https://img.shields.io/badge/Biblioteca:-Actuator-3c0064?style=for-the-badge)
 ![Biblioteca usada](https://img.shields.io/badge/Biblioteca:-Validation-3c0064?style=for-the-badge)
-![Biblioteca usada](https://img.shields.io/badge/Biblioteca:-Swagger-3c0064?style=for-the-badge)
+![Biblioteca usada](https://img.shields.io/badge/Biblioteca:-Openapi-3c0064?style=for-the-badge)
 ![Biblioteca usada](https://img.shields.io/badge/Biblioteca:-Lombok-3c0064?style=for-the-badge)
 ![Biblioteca usada](https://img.shields.io/badge/Biblioteca:-H2-3c0064?style=for-the-badge)
 
@@ -47,7 +47,7 @@ Abaixo segue listagem das possíveis operações.
 - ``Spring JPA;``
 - ``Spring Actuator;``
 - ``Spring Validation;``
-- ``Swagger;``
+- ``Openapi;``
 - ``Lombok;``
 - ``H2;``
 - ``Gradle;``
