@@ -1,0 +1,449 @@
+{
+	"info": {
+		"_postman_id": "5ee8db0a-a7a0-40da-a7e8-2060830c1ffe",
+		"name": "Pix-project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8954491"
+	},
+	"item": [
+		{
+			"name": "registryKeyALEATORIO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"ALEATORIO\",\r\n    \"keyValue\": 155446389012345678901234567890123456,\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registryKeyALEATORIO invalid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"ALEATORIO\",\r\n    \"keyValue\": 15544638901234567867890123456,\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registryKeyCPF",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"CPF\",\r\n    \"keyValue\": 15545638901,\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registryKeyCPF invalid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"CPF\",\r\n    \"keyValue\": 155456901,\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registryKeyCNPJ",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"CNPJ\",\r\n    \"keyValue\": 32115545638901,\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registryKeyCNPJ invalid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"CNPJ\",\r\n    \"keyValue\": 321155456389011,\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registryKeyEMAIL",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"EMAIL\",\r\n    \"keyValue\": \"jussara.baltazar@gmail.com\",\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registryKeyEMAIL invalid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"EMAIL\",\r\n    \"keyValue\": \"jussara.baltazar.gmail.com\",\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registryKeyCELULAR",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"CELULAR\",\r\n    \"keyValue\": \"+55011932340202\",\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registryKeyCELULAR invalid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"keyType\": \"CELULAR\",\r\n    \"keyValue\": \"+550119323402022\",\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": \"4054\",\r\n    \"account\": \"87108\",\r\n    \"accountHolderName\": \"Jussara\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/pix",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateKey",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountType\": \"CORRENTE\",\r\n    \"agency\": 4054,\r\n    \"account\": 87108,\r\n    \"accountHolderName\": \"Delfim\",\r\n    \"accountHolderSurname\": \"Baltazar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9090/pix/048025ad-99ab-479f-916d-a69c717bd6ca",
+					"host": [
+						"localhost"
+					],
+					"port": "9090",
+					"path": [
+						"pix",
+						"048025ad-99ab-479f-916d-a69c717bd6ca"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InactiveKey",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pix/inactive/94fe9aba-5347-4c43-9bcb-64cbe8c473f6",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix",
+						"inactive",
+						"94fe9aba-5347-4c43-9bcb-64cbe8c473f6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pix/findById/048025ad-99ab-479f-916d-a69c717bd6ca",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix",
+						"findById",
+						"048025ad-99ab-479f-916d-a69c717bd6ca"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByKeyType",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pix/findByKeyType/ALEATORIO",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix",
+						"findByKeyType",
+						"ALEATORIO"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByAgencyAndAccount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pix/findByAgencyAndAccount/4054/87108",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix",
+						"findByAgencyAndAccount",
+						"4054",
+						"87108"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByAccountHolderName",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pix/findByAccountHolderName/Jussara",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix",
+						"findByAccountHolderName",
+						"Jussara"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByKeyInclusionDate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pix/findByKeyInclusionDate/2024-04-21",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix",
+						"findByKeyInclusionDate",
+						"2024-04-21"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "findByKeyInactivationDate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pix/findByKeyInactivationDate/2024-04-21",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pix",
+						"findByKeyInactivationDate",
+						"2024-04-21"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
